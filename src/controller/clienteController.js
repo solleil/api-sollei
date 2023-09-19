@@ -1,23 +1,28 @@
 import { Router } from "express";
-import { Consultar, Inserir } from "../repository/clienteRepository.js";
+import { listartodos, inserir } from "../repository/clienteRepository.js";
+const server = Router();
 
 
-const endPoint = Router();
-
-endPoint.get(('/cliente'), async (req, resp) => {
-
-        let resposta = await Consultar();
-        resp.send(resposta);
-
+server.get(('/cliente'), async (req, resp) => {
+        try {
+          const resposta = await listartodos();
+          resp.send(resposta);
+      
+        } catch (err) {
+          resp.status(404).send({ erro: err.message })
+        }
+      })
+      
+      
+server.post(('/cliente'), async (req, resp) => {
+        try {
+          let x = req.body;
+          let dados = await inserir(x)
+          resp.send(dados)
+        } catch (error) {
+          resp.status(404).send({ erro: err.message })
+        }
+      
 })
 
-
-endPoint.post(('/cliente'), async (req, resp) => {
-
-        let x = req.body;
-        let dados = await Inserir(x)
-        resp.send(dados)
-
-})
-
-export default endPoint;
+export default server;
